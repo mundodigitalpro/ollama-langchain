@@ -1,0 +1,31 @@
+services:
+  ollama-container:
+    container_name: ollama-container  # Asegura que se use este nombre sin prefijos
+    image: ollama/ollama
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - ollama-network
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:11434"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+
+  app:
+    image: jose/ollama-langchain
+    ports:
+      - "8501:8501"
+    environment:
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
+    networks:
+      - ollama-network
+
+networks:
+  ollama-network:
+    driver: bridge
+
+volumes:
+  ollama:
